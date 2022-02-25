@@ -17,11 +17,11 @@ const knex = require('knex')(db);
 const all = async (req, res, next) => {
 	knex.select('*').from('events')
 		.where({ void: 0 })
-		.then(teams => {
+		.then(events => {
 			res.format({
 				'application/json': function () {
 					return res.status(200).json({
-						teams
+						events
 					});
 				},
 			})
@@ -35,11 +35,11 @@ const findById = async (id) => {
 
 const getTeam = async (req, res, next) => {
 	const id = req.params.id
-	const team = await findById(id)
+	const event = await findById(id)
 	res.format({
 		'application/json': function () {
 			return res.status(200).json({
-				team
+				event
 			});
 		},
 	})
@@ -49,12 +49,12 @@ const create = async (req, res, next) => {
 	const { name, description, event_date, event_time } = req.body
 	knex('events').insert({ name, description, event_date, event_time, created_at: new Date() })
 		.then(async id => {
-			const team = await findById(id)
+			const events = await findById(id)
 			res.format({
 				'application/json': function () {
 					return res.status(201).json({
 						message: `Event created successfully`,
-						team
+						events
 					});
 				},
 			})
@@ -89,7 +89,7 @@ const update = async (req, res, next) => {
 				'application/json': function () {
 					return res.status(200).json({
 						message: 'Event was updated',
-						team: updated
+						event: updated
 					});
 				},
 			})
