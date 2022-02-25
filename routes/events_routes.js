@@ -10,7 +10,7 @@ router.get('/', eventsController.all);
 router.post('/', eventsController.create);
 router
     .route('/:id')
-    .get(eventsController.getTeam)
+    .get(eventsController.getEvent)
     .patch(eventsController.update)
     .delete(eventsController.remove);
 
