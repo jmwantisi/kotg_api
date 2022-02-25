@@ -5,8 +5,9 @@ exports.seed = function(knex) {
     .then(function () {
       // Inserts seed entries
       return knex('member_types').insert([
-        { name: 'captain', description: '', created_at: new Date(), updated_at: new Date() },
-        { name: 'regular', description: '', created_at: new Date(), updated_at: new Date() }
+        { name: 'Captain', description: '', created_at: new Date(), updated_at: new Date() },
+        { name: 'Regular', description: '', created_at: new Date(), updated_at: new Date() },
+        { name: 'Non Team Member ', description: '', created_at: new Date(), updated_at: new Date() }
       ]);
     });
 };
