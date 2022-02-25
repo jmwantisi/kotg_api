@@ -33,7 +33,7 @@ const findById = async (id) => {
 		.where({ void: 0, id })
 }
 
-const getTeam = async (req, res, next) => {
+const getEvent = async (req, res, next) => {
 	const id = req.params.id
 	const event = await findById(id)
 	res.format({
@@ -101,5 +101,5 @@ module.exports = {
 	create,
 	remove,
 	update,
-	getTeam
+	getEvent
 }
