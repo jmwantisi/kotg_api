@@ -14,7 +14,7 @@ const db = {
 
 const knex = require('knex')(db);
 
-const all = async (req, res, next) => {
+const all = async (_req, res, next) => {
 	knex.select('*').from('members')
 		.where({ void: 0 })
 		.then(member => {
@@ -33,7 +33,7 @@ const findById = async (id) => {
 		.where({ void: 0, id })
 }
 
-const getTeam = async (req, res, next) => {
+const getMember = async (req, res, _next) => {
 	const id = req.params.id
 	const member = await findById(id)
 	res.format({
@@ -45,9 +45,10 @@ const getTeam = async (req, res, next) => {
 	})
 }
 
-const create = async (req, res, next) => {
-	const { firstname, lastname, phone_number, address, } = req.body
-	knex('members').insert({ firstname, lastname, phone_number, address, created_at: new Date() })
+// Non team member
+const create = async (req, res, _next) => {
+	const { firstname, lastname, phone_number, address } = req.body
+	knex('members').insert({ firstname, lastname, phone_number, address, member_type_id: 3, created_at: new Date() })
 		.then(async id => {
 			const member = await findById(id)
 			res.format({
@@ -61,12 +62,12 @@ const create = async (req, res, next) => {
 		})
 }
 
-const remove = async (req, res, next) => {
+const remove = async (req, res, _next) => {
 	const id = req.params.id
 	knex('members')
 		.where({ id })
 		.update({ void: 1 })
-		.then(team => {
+		.then(_team => {
 			res.format({
 				'application/json': function () {
 					return res.status(200).json({
@@ -77,13 +78,71 @@ const remove = async (req, res, next) => {
 		})
 }
 
-const update = async (req, res, next) => {
+
+const findMembersByMemberTypeId = async (typeId) => {
+	return knex.select('*').from('members as m')
+	.innerJoin('member_types as mt', 'mt.id', 'm.member_type_id')
+	.where({ void: 0, 'mt.id': typeId })
+}
+
+// CREATE ROUTE
+const fetchTeamMembersByType = async (req, res, _next) => {
+	const id = req.params.type_id
+	const members = await findMembersByMemberTypeId(id)
+	res.format({
+		'application/json': function () {
+			return res.status(200).json({
+				members
+			});
+		},
+	})
+}
+
+const findMemberByMemberTypeId = async (memberId, typeId) => {
+	return knex.select('*').from('members as m')
+		.innerJoin('member_types as mt', 'mt.id', 'm.member_type_id')
+		.where({ void: 0, 'm.id': memberId, 'mt.id': typeId })
+}
+
+// CREATE ROUTE
+const fetchTeamMemberByType = async (req, res, _next) => {
+	const id = req.params.type_id
+	const memberId = req.params.member_id
+	const members = await findMemberByMemberTypeId(memberId, id)
+	res.format({
+		'application/json': function () {
+			return res.status(200).json({
+				members
+			});
+		},
+	})
+}
+
+
+const fetchATeamMember = async (req, res, _next) => {
 	const id = req.params.id
-	const { firstname, lastname, phone_number, address } = req.body
+	knex('members')
+		.where({ id })
+		.update({ void: 1 })
+		.then(_team => {
+			res.format({
+				'application/json': function () {
+					return res.status(200).json({
+						message: 'Member was deleted'
+					});
+				},
+			})
+		})
+}
+
+// revoke captain if already exist
+const update = async (req, res, _next) => {
+	const id = req.params.id
+	const { firstname, lastname, phone_number, address, member_type_id } = req.body
 	knex('members')
 		.where({ id: parseInt(id) })
-		.update({ firstname, lastname, phone_number, address, updated_at: new Date() })
-		.then(async team => {
+		.update({ firstname, lastname, phone_number, address, member_type_id, updated_at: new Date() })
+		.then(async _team => {
 			const updated = await findById(id)
 			res.format({
 				'application/json': function () {
@@ -101,5 +160,7 @@ module.exports = {
 	create,
 	remove,
 	update,
-	getTeam
+	getMember,
+	fetchTeamMembersByType,
+	fetchTeamMemberByType
 }
