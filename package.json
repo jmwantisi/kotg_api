@@ -4,8 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon --exec babel-node app.js",
-    "test": "mocha"
+    "start": "nodemon --exec babel-node server.js",
+    "test": "mocha",
+    "knex": "knex"
   },
   "author": "",
   "license": "ISC",
@@ -28,6 +29,9 @@
     "passport": "^0.4.1",
     "passport-http": "^0.3.0",
     "passport-jwt": "^4.0.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.3.2",
+    "knex": "^0.95.13"
   }
 }
