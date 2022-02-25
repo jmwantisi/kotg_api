@@ -12,6 +12,9 @@ router
     .route('/:id')
     .get(teamController.getTeam)
     .patch(teamController.update)
-    .delete(teamController.remove);
+		.delete(teamController.remove);
+
+router.get('/:team_id', teamController.fetchTeamMembers);
+router.patch('/:id/add_member', teamController.addToTeam);
 
 module.exports = router ;
