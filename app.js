@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors'
 import teamsRoutes from './routes/teams_route';
+import eventsRoutes from './routes/events_routes';
 import bodyParser from 'body-parser';
 import { ExtractJwt, passport } from 'passport-jwt'
 
@@ -13,6 +14,7 @@ app.use(bodyParser.json({
 }));
 
 app.use('/teams', teamsRoutes);
+app.use('/events', eventsRoutes);
 
 module.exports = app;
 
